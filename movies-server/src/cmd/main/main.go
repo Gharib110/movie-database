@@ -1,6 +1,10 @@
 package main
 
 import (
+	"context"
+	"database/sql"
+	_ "github.com/lib/pq"
+	zerolog "github.com/rs/zerolog/log"
 	"log"
 	"net/http"
 	"os"
@@ -11,6 +15,9 @@ import (
 type Config struct {
 	Port     int
 	HostName string
+	db       struct {
+		DSN string
+	}
 }
 
 type AppStatus struct {
@@ -33,6 +40,7 @@ func run() {
 	config := &Config{
 		Port:     8080,
 		HostName: "localhost",
+		db:       struct{ DSN string }{DSN: "postgres://postgre:alireza1380##@localhost:5720/my_movies?sslmode=disable"},
 	}
 
 	logger := log.New(os.Stdout, "", log.Ldate|log.Ltime)
@@ -40,6 +48,15 @@ func run() {
 		ConfigApp: config,
 		Logger:    logger,
 	}
+
+	db, err := openDB(config)
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+			zerolog.Fatal().Msg("Error in closing the db object : " + err.Error())
+			return
+		}
+	}(db)
 
 	srv := &http.Server{
 		Addr:              app.ConfigApp.HostName + ":" + strconv.Itoa(app.ConfigApp.Port),
@@ -51,9 +68,27 @@ func run() {
 	}
 
 	log.Println("App is listening on localhost:8080 ...")
-	err := srv.ListenAndServe()
+	err = srv.ListenAndServe()
 	if err != nil {
 		log.Fatalln("Error in serving the application : " + err.Error())
 		return
 	}
+}
+
+func openDB(cfg *Config) (*sql.DB, error) {
+	db, err := sql.Open("postgres", cfg.db.DSN)
+	if err != nil {
+		zerolog.Fatal().Msg("Error occurred in openDB : " + err.Error())
+		return nil, err
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	defer cancel()
+	err = db.PingContext(ctx)
+	if err != nil {
+		zerolog.Fatal().Msg("Error in pinging the db in openDB : " + err.Error())
+		return nil, err
+	}
+
+	return db, nil
 }
