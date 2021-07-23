@@ -16,7 +16,7 @@ func (app *Application) writeJSON(w http.ResponseWriter, status int, data interf
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(status)
 	_, err = w.Write(out)
 	if err != nil {
 		log.Println("Error in writeJSON : " + err.Error())

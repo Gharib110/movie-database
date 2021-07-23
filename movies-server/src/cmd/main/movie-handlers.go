@@ -1,12 +1,11 @@
 package main
 
 import (
-	"github.com/DapperBlondie/movie-server/src/models"
 	"github.com/julienschmidt/httprouter"
+	zerolog "github.com/rs/zerolog/log"
 	"log"
 	"net/http"
 	"strconv"
-	"time"
 )
 
 func (app *Application) getOneMovie(w http.ResponseWriter, r *http.Request) {
@@ -17,26 +16,45 @@ func (app *Application) getOneMovie(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	movie := &models.Movie{
-		ID:          movieId,
-		Title:       "None",
-		Description: "None of my concern",
-		Year:        2021,
-		ReleaseDate: time.Date(2021, 01, 01, 1, 20, 23, 0, time.UTC),
-		Runtime:     100,
-		Rating:      5,
-		MPAARating:  "PG-13",
-		CreatedAt:   time.Now(),
-		UpdatedAt:   time.Now(),
+	movie, err := app.models.DB.GetOne(movieId)
+	if err != nil {
+		zerolog.Error().Msg(err.Error())
+		return
 	}
 
 	err = app.writeJSON(w, http.StatusOK, movie, "movie")
 	if err != nil {
-		log.Println("Error in movie-handlers : " + err.Error())
+		zerolog.Error().Msg("Error in movie-handlers : " + err.Error())
 		return
 	}
 }
 
 func (app *Application) getAllMovies(w http.ResponseWriter, r *http.Request) {
+	movies, err := app.models.DB.GetAll()
+	if err != nil {
+		zerolog.Error().Msg("Error in getting all movies : " + err.Error())
+		return
+	}
+
+	err = app.writeJSON(w, http.StatusOK, movies, "movies")
+	if err != nil {
+		zerolog.Error().Msg("Error in writing the movies to response writer : " + err.Error())
+		return
+	}
+}
+
+func (app *Application) deleteMovie(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func (app *Application) updateMovie(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func (app *Application) insertMovie(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func (app *Application) searchMovie(w http.ResponseWriter, r *http.Request) {
 
 }

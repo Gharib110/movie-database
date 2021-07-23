@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"database/sql"
+	"github.com/DapperBlondie/movie-server/src/models"
 	_ "github.com/lib/pq"
 	zerolog "github.com/rs/zerolog/log"
 	"log"
@@ -29,6 +30,7 @@ type AppStatus struct {
 type Application struct {
 	ConfigApp *Config
 	Logger    *log.Logger
+	models    *models.Models
 }
 
 func main() {
@@ -43,12 +45,6 @@ func run() {
 		db:       struct{ DSN string }{DSN: "postgres://postgre:alireza1380##@localhost:5720/my_movies?sslmode=disable"},
 	}
 
-	logger := log.New(os.Stdout, "", log.Ldate|log.Ltime)
-	app := &Application{
-		ConfigApp: config,
-		Logger:    logger,
-	}
-
 	db, err := openDB(config)
 	defer func(db *sql.DB) {
 		err := db.Close()
@@ -57,6 +53,13 @@ func run() {
 			return
 		}
 	}(db)
+
+	logger := log.New(os.Stdout, "", log.Ldate|log.Ltime)
+	app := &Application{
+		ConfigApp: config,
+		Logger:    logger,
+		models:    models.NewModel(db),
+	}
 
 	srv := &http.Server{
 		Addr:              app.ConfigApp.HostName + ":" + strconv.Itoa(app.ConfigApp.Port),
