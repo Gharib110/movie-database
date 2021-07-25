@@ -1,2 +1,2 @@
 # movie-database
-An restful application with Golang for showing movies with admin panel
+A Rest-API for managing a website for showing movies with React for front-end.
