@@ -158,3 +158,41 @@ WHERE mg.movie_id=$1`
 
 	return movies, nil
 }
+
+func (d *DBModel) GenresAll() ([]*Genre, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*6)
+	defer cancel()
+
+	query := `SELECT id,genre_name,created_at,updated_at FROM genres ORDER BY genre_name`
+
+	rows, err := d.DB.QueryContext(ctx, query)
+	if err != nil {
+		zerolog.Error().Msg(err.Error() + " occurred in getting all of genres")
+		return nil, err
+	}
+	defer func(rows *sql.Rows) {
+		err := rows.Close()
+		if err != nil {
+			zerolog.Error().Msg(err.Error() + " occurred in closing rows")
+			return
+		}
+	}(rows)
+
+	var genres []*Genre
+	for rows.Next() {
+		var g Genre
+		err := rows.Scan(
+			&g.ID,
+			&g.GenreName,
+			&g.CreatedAt,
+			&g.UpdatedAt,
+		)
+		if err != nil {
+			zerolog.Error().Msg(err.Error() + " occurred in scanning values")
+			return nil, err
+		}
+		genres = append(genres, &g)
+	}
+
+	return genres, err
+}
