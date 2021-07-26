@@ -44,7 +44,7 @@ export default class Movies extends Component {
       return (
         <Fragment>
           <h2>Choose a movie</h2>
-
+          <hr />
           <div className="list-group">
             {movies.map((m) => (
               <Link
