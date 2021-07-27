@@ -40,7 +40,7 @@ func main() {
 
 func run() {
 	config := &Config{
-		Port:     8080,
+		Port:     4000,
 		HostName: "localhost",
 		db:       struct{ DSN string }{DSN: "postgres://postgre:alireza1380##@localhost:5720/my_movies?sslmode=disable"},
 	}
@@ -70,7 +70,7 @@ func run() {
 		IdleTimeout:       time.Minute,
 	}
 
-	log.Println("App is listening on localhost:8080 ...")
+	log.Println("App is listening on localhost:4000 ...")
 	err = srv.ListenAndServe()
 	if err != nil {
 		log.Fatalln("Error in serving the application : " + err.Error())
