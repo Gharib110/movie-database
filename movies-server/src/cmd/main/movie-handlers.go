@@ -142,7 +142,6 @@ func (app *Application) editMovie(w http.ResponseWriter, r *http.Request) {
 		zerolog.Error().Msg(err.Error() + " occurred in writing the response to client")
 		return
 	}
-
 }
 
 func (app *Application) deleteMovie(w http.ResponseWriter, r *http.Request) {
