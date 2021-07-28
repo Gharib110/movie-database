@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	zerolog "github.com/rs/zerolog/log"
+	"golang.org/x/mod/modfile"
 	"time"
 )
 
@@ -306,4 +307,29 @@ func (d *DBModel) InsertMovie(movie *Movie) error {
 	}
 
 	return nil
+}
+
+func (d *DBModel) UpdateMovie(movie *Movie) error {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*6)
+	defer cancel()
+
+	stmt := `UPDATE movies SET title=$1,description=$2,year=$3,release_date=$4,runtime=$5,rating=$6,mpaa_rating=$7,updated_at=$8 WHERE id=$9`
+
+	_, err := d.DB.ExecContext(ctx, stmt,
+		&movie.Title,
+		&movie.Description,
+		&movie.Year,
+		&movie.ReleaseDate,
+		&movie.Runtime,
+		&movie.Rating,
+		&movie.MPAARating,
+		&movie.UpdatedAt,
+		&movie.ID,
+	)
+	if err != nil {
+		zerolog.Error().Msg(err.Error() + " occurred in InsertMovie function")
+		return err
+	}
+
+
 }
