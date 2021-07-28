@@ -6,8 +6,5 @@ This repository just a way or sign for showing my abilities in a specific langua
 My apps are so little, but I am looking forward to make a bigger one.
 ***
 
-![Profile View Counter](https://komarev.com/ghpvc/?username=DapperBlondie)
-
-![Hits](https://hitcounter.pythonanywhere.com/count/tag.svg?url=https://github.com/DapperBlondie/movie-database)
 # movie-database
 A Rest-API for managing a website for showing movies with React for front-end.
