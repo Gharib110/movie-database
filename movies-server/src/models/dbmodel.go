@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"fmt"
 	zerolog "github.com/rs/zerolog/log"
-	"golang.org/x/mod/modfile"
 	"time"
 )
 
@@ -309,6 +308,7 @@ func (d *DBModel) InsertMovie(movie *Movie) error {
 	return nil
 }
 
+// UpdateMovie use for updating a movie with its ID
 func (d *DBModel) UpdateMovie(movie *Movie) error {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*6)
 	defer cancel()
@@ -331,5 +331,20 @@ func (d *DBModel) UpdateMovie(movie *Movie) error {
 		return err
 	}
 
+	return nil
+}
 
+// DeleteMovie use for deleting a movie by its ID
+func (d *DBModel) DeleteMovie(id int) error {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*6)
+	defer cancel()
+
+	stmt := `DELETE FROM movies WHERE id=$1`
+	_, err := d.DB.ExecContext(ctx, stmt, id)
+	if err != nil {
+		zerolog.Error().Msg(err.Error())
+		return err
+	}
+
+	return nil
 }

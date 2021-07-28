@@ -137,7 +137,7 @@ func (app *Application) editMovie(w http.ResponseWriter, r *http.Request) {
 			zerolog.Error().Msg(err.Error() + " occurred in editMovie handler")
 			return
 		}
-	}else {
+	} else {
 		err = app.models.DB.UpdateMovie(&movie)
 		if err != nil {
 			zerolog.Error().Msg(err.Error() + " occurred in editMovie handler")
@@ -154,15 +154,25 @@ func (app *Application) editMovie(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *Application) deleteMovie(w http.ResponseWriter, r *http.Request) {
+	params := httprouter.ParamsFromContext(r.Context())
+	id, err := strconv.Atoi(params.ByName("id"))
+	if err != nil {
+		zerolog.Error().Msg(err.Error())
+		return
+	}
 
-}
+	err = app.models.DB.DeleteMovie(id)
+	if err != nil {
+		zerolog.Error().Msg(err.Error())
+		return
+	}
 
-func (app *Application) updateMovie(w http.ResponseWriter, r *http.Request) {
-
-}
-
-func (app *Application) insertMovie(w http.ResponseWriter, r *http.Request) {
-
+	ok := &JsonResp{OK: true}
+	err = app.writeJSON(w, http.StatusOK, ok, "response")
+	if err != nil {
+		zerolog.Error().Msg(err.Error())
+		return
+	}
 }
 
 func (app *Application) searchMovie(w http.ResponseWriter, r *http.Request) {
