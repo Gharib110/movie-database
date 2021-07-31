@@ -9,6 +9,7 @@ import (
 	"github.com/DapperBlondie/movie-server/src/models"
 	_ "github.com/lib/pq"
 	zerolog "github.com/rs/zerolog/log"
+	"golang.org/x/crypto/bcrypt"
 	"log"
 	"net/http"
 	"os"
@@ -113,4 +114,13 @@ func openDB(cfg *Config) (*sql.DB, error) {
 	}
 
 	return db, nil
+}
+
+func tempCryptor() string {
+	hashPass, err := bcrypt.GenerateFromPassword([]byte("password"), 12)
+	if err != nil {
+		return ""
+	}
+
+	return string(hashPass)
 }

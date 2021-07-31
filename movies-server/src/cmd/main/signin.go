@@ -14,7 +14,7 @@ import (
 var user *models.User = &models.User{
 	ID:       0,
 	Email:    "dapper@me.ir",
-	Password: "",
+	Password: tempCryptor(),
 }
 
 func createHashPassword(pass string) (string, error) {
@@ -68,5 +68,11 @@ func (app *Application) signIn(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.writeJSON(w, http.StatusOK, jB, "response")
+	err = app.writeJSON(w, http.StatusOK, jB, "response")
+	if err != nil {
+		zerolog.Error().Msg(err.Error())
+		return
+	}
+
+	return
 }
