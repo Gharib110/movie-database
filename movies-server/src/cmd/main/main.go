@@ -2,7 +2,10 @@ package main
 
 import (
 	"context"
+	"crypto/hmac"
+	"crypto/sha256"
 	"database/sql"
+	"encoding/hex"
 	"github.com/DapperBlondie/movie-server/src/models"
 	_ "github.com/lib/pq"
 	zerolog "github.com/rs/zerolog/log"
@@ -18,6 +21,9 @@ type Config struct {
 	HostName string
 	db       struct {
 		DSN string
+	}
+	Jwt struct {
+		Secret string
 	}
 }
 
@@ -38,11 +44,23 @@ func main() {
 	return
 }
 
+func createJwtSecret() string {
+	secret := "DapperBlondie"
+	data := "Johnny"
+
+	h := hmac.New(sha256.New, []byte(secret))
+	h.Write([]byte(data))
+	sha := hex.EncodeToString(h.Sum(nil))
+
+	return sha
+}
+
 func run() {
 	config := &Config{
-		Port:     4000,
+		Port:     8080,
 		HostName: "localhost",
 		db:       struct{ DSN string }{DSN: "postgres://postgre:alireza1380##@localhost:5720/my_movies?sslmode=disable"},
+		Jwt:      struct{ Secret string }{Secret: createJwtSecret()},
 	}
 
 	db, err := openDB(config)
@@ -87,6 +105,7 @@ func openDB(cfg *Config) (*sql.DB, error) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 	defer cancel()
+
 	err = db.PingContext(ctx)
 	if err != nil {
 		zerolog.Fatal().Msg("Error in pinging the db in openDB : " + err.Error())

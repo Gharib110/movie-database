@@ -153,6 +153,7 @@ func (app *Application) editMovie(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// deleteMovie use for deleting a movie by its ID after deletion we send a OK response
 func (app *Application) deleteMovie(w http.ResponseWriter, r *http.Request) {
 	params := httprouter.ParamsFromContext(r.Context())
 	id, err := strconv.Atoi(params.ByName("id"))
@@ -173,8 +174,4 @@ func (app *Application) deleteMovie(w http.ResponseWriter, r *http.Request) {
 		zerolog.Error().Msg(err.Error())
 		return
 	}
-}
-
-func (app *Application) searchMovie(w http.ResponseWriter, r *http.Request) {
-
 }
