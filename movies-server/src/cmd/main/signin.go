@@ -68,7 +68,7 @@ func (app *Application) signIn(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = app.writeJSON(w, http.StatusOK, jB, "response")
+	err = app.writeJSON(w, http.StatusOK, string(jB), "response")
 	if err != nil {
 		zerolog.Error().Msg(err.Error())
 		return

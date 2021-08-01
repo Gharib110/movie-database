@@ -60,7 +60,7 @@ func run() {
 	config := &Config{
 		Port:     8080,
 		HostName: "localhost",
-		db:       struct{ DSN string }{DSN: "postgres://postgre:alireza1380##@localhost:5720/my_movies?sslmode=disable"},
+		db:       struct{ DSN string }{DSN: "postgres://postgres:alireza1380##@localhost:5720/my_movies?sslmode=disable"},
 		Jwt:      struct{ Secret string }{Secret: createJwtSecret()},
 	}
 
@@ -97,6 +97,7 @@ func run() {
 	}
 }
 
+// openDB use for creating an instance of type sql.DB for our application
 func openDB(cfg *Config) (*sql.DB, error) {
 	db, err := sql.Open("postgres", cfg.db.DSN)
 	if err != nil {
