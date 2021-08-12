@@ -5,4 +5,4 @@ Actually, Everything is same as my Booking Management System except for GraphQL 
 ***
 
 ## Docs 
-Follow this link for full documentation and you will make me happy if you leave a comment for me: https://gist.github.com/DapperBlondie/84fade2650e7eddb42474bab97af7b46
+Follow this link for full documentation and you will make me happy if you leave a comment for me: [movie-database](https://gist.github.com/DapperBlondie/84fade2650e7eddb42474bab97af7b46)
